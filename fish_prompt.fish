@@ -112,7 +112,7 @@ end
 
 
 function prompt_dir -d "Display the current directory"
-  prompt_segment 1C1C1C FFFFFF (prompt_pwd)
+  prompt_segment FFFFFF 000000 (prompt_pwd)
 end
 
 
@@ -127,9 +127,9 @@ function prompt_hg -d "Display mercurial state"
       if [ "$state" = "!" ]
         prompt_segment red white "$branch_symbol $branch ±"
       else if [ "$state" = "?" ]
-          prompt_segment yellow black "$branch_symbol $branch ±"
+          prompt_segment FFAF01 402B00 "$branch_symbol $branch ±"
         else
-          prompt_segment green black "$branch_symbol $branch"
+          prompt_segment AFD702 005F01 "$branch_symbol $branch"
       end
     end
   end
@@ -150,10 +150,12 @@ function prompt_git -d "Display the current git state"
     set -l BG PROMPT
     set -l dirty (command git status --porcelain --ignore-submodules=dirty 2> /dev/null)
     if [ "$dirty" = "" ]
-      set BG green
+      set BG AFD702
+      set FG 005F01
       set PROMPT "$branch"
     else
-      set BG yellow
+      set BG FFAF01
+      set FG 402B00
       set dirty ''
 
       # Check if there's any commit in the repo
@@ -186,7 +188,7 @@ function prompt_git -d "Display the current git state"
         set PROMPT "$branch $dirty"
       end
     end
-    prompt_segment $BG black $PROMPT
+    prompt_segment $BG $FG $PROMPT
   end
 end
 
@@ -197,7 +199,7 @@ function prompt_svn -d "Display the current svn state"
     set branch (svn_get_branch)
     set branch_symbol \uE0A0
     set revision (svn_get_revision)
-    prompt_segment green black "$branch_symbol $branch:$revision"
+    prompt_segment AFD702 black "$branch_symbol $branch:$revision"
   end
 end
 
@@ -227,7 +229,7 @@ function prompt_status -d "the symbols for a non zero exit status, root and back
     # if superuser (uid == 0)
     set -l uid (id -u $USER)
     if [ $uid -eq 0 ]
-      prompt_segment black yellow "⚡"
+      prompt_segment black FFAF01 "⚡"
     end
 
     # Jobs display
