@@ -28,7 +28,7 @@ function neka_segment -a bg fg text
   if test -z "$segment_color"
       set segment_color normal
   end
-  set -g segment (set_color $fg -b $bg)" $text "(set_color $bg -b $segment_color)"$separator$segment"
+  set -g segment (set_color $fg -b $bg)" $text"(set_color $bg -b $segment_color)"$separator$segment"
   set -g segment_color $bg
 end
 
@@ -73,23 +73,32 @@ end
 
 
 function neka_dir -d "Display the current directory"
-  neka_segment FFFFFF 000000 (prompt_pwd)
+  neka_segment FFFFFF 000000 (prompt_pwd)" "
 end
 
 function neka_git -d "Display the current git state"
   set branch_symbol \uE0A0
-  set -l git_status
   set BG AFD702
   set FG 005F01
 
+  set -l stat (command git rev-list --left-right --count 'HEAD...@{upstream}' ^ /dev/null | awk '
+    $1 > 0 { printf "↑"$1 }
+    $1 > 0 && $2 > 0 { printf " " }
+    $2 > 0 { printf "↓"$2 }
+  ')" "
+
+  if git_is_stashed
+    set stat (command git stash list 2>/dev/null | wc -l | awk '$1 > 0 { print "⟀"$1 }')" $stat"
+  end
+
   if git_is_staged
     if git_is_dirty
-      set git_status " ±"
+      set stat "± "
     else
-      set git_status " +"
+      set stat "+ "
     end
   else if git_is_dirty
-    set git_status " ●"
+    set stat "● "
   end
 
   if git_is_touched
@@ -97,7 +106,7 @@ function neka_git -d "Display the current git state"
     set FG 664711
   end
 
-  neka_segment $BG $FG "$branch_symbol "(git_branch_name)"$git_status"
+  neka_segment $BG $FG "$branch_symbol "(git_branch_name)" $stat"
 end
 
 function neka_status -d "the symbols for a non zero exit status, root and background jobs"
