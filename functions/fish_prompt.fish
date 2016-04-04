@@ -34,7 +34,7 @@ function fish_prompt
     ')" "
 
     if git_is_stashed
-      set git_stat (command git stash list 2>/dev/null | wc -l | awk '$1 > 0 { print "⟀"$1 }')" $git_stat"
+      set git_stat (command git stash list 2>/dev/null | wc -l | awk '$1 > 0 { print "↙"$1 }')" $git_stat"
     end
 
     if git_is_staged
