@@ -4,6 +4,7 @@
 # set -g theme_hostname always
 # set -g default_user your_normal_user
 
+
 function fish_prompt
   # Do not depend on these behavior.
   if set -q theme_hide_hostname
@@ -39,12 +40,12 @@ function fish_prompt
 
     if git_is_staged
       if git_is_dirty
-        set git_stat "± "
+        set git_stat "$git_stat± "
       else
-        set git_stat "+ "
+        set git_stat "$git_stat+ "
       end
     else if git_is_dirty
-      set git_stat "● "
+      set git_stat "$git_stat● "
     end
 
     if git_is_touched
